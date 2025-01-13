@@ -28,7 +28,7 @@ jobs:
         run: |
           dotnet sonarscanner begin /k:"sonar-dotnet-scan" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_URL }}" /o:"sonar-ad111" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
             dotnet build src/MySample.ClassLibrary/MySample.ClassLibrary.csproj
-            dotnet-coverage collect 'dotnet test MySample.Tests.csproj' -f xml -o "coverage.xml"
+            dotnet-coverage collect 'dotnet test tests/MySample.Tests/MySample.Tests.csproj' -f xml -o "coverage.xml"
             dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
             
             
