@@ -49,7 +49,6 @@ jobs:
       - name: Prepare Coverage Report for SonarQube
         shell: powershell
         run: |
-          # Use the Visual Studio Coverage XML format and set the property for SonarQube
           echo "sonar.cs.vscoveragexml.reportsPaths=coverage.xml" >> $GITHUB_ENV
       # Step 8: End SonarQube Analysis
       - name: End SonarQube Analysis
