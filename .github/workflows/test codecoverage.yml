@@ -22,37 +22,33 @@ jobs:
       - name: Install SonarScanner for .NET
         run: |
           dotnet tool install --global dotnet-sonarscanner
+          dotnet tool install --global dotnet-coverage
       # Step 4: Start SonarQube Analysis (Begin Step)
       - name: Begin SonarQube Analysis
         run: |
-          dotnet sonarscanner begin `
-            /k:"sonar-dotnet-scan" `
-            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
-            /d:sonar.host.url="${{ secrets.SONAR_URL }}" `
-            /o:"sonar-ad111" `
-            /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
-      # Step 5: Build the Project
-      - name: Build the Project
-        run: |
-          dotnet build src/MySample.ClassLibrary/MySample.ClassLibrary.csproj
-      # Step 6: Run Tests and Collect Code Coverage
-      - name: Install dotnet-coverage tool
-        shell: powershell
-        run: |
-          dotnet tool install --global dotnet-coverage
-      - name: Run tests and collect code coverage
-        shell: powershell
-        run: |
-          cd tests/MySample.Tests
-          dir
-          dotnet-coverage collect 'dotnet test MySample.Tests.csproj' -f xml --output "coverage.xml"
-      # Step 7: Prepare Coverage Report for SonarQube
-      - name: Prepare Coverage Report for SonarQube
-        shell: powershell
-        run: |
-          echo "sonar.cs.vscoveragexml.reportsPaths=coverage.xml" >> $GITHUB_ENV
-      # Step 8: End SonarQube Analysis
-      - name: End SonarQube Analysis
-        run: |
-          dotnet sonarscanner end `
-            /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          dotnet sonarscanner begin /k:"sonar-dotnet-scan" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_URL }}" /o:"sonar-ad111" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
+            dotnet build src/MySample.ClassLibrary/MySample.ClassLibrary.csproj
+            dotnet-coverage collect 'dotnet test MySample.Tests.csproj' -f xml -o "coverage.xml"
+            dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+            
+            
+      # # Step 5: Build the Project
+      # - name: Build the Project
+      #   run: |
+      #     dotnet build src/MySample.ClassLibrary/MySample.ClassLibrary.csproj
+      # # Step 6: Run Tests and Collect Code Coverage
+      # - name: Install dotnet-coverage tool
+      #   shell: powershell
+      #   run: |
+      #     dotnet tool install --global dotnet-coverage
+      # - name: Run tests and collect code coverage
+      #   shell: powershell
+      #   run: |
+      #     cd tests/MySample.Tests
+      #     dir
+      #     dotnet-coverage collect 'dotnet test MySample.Tests.csproj' -f xml -o "coverage.xml"
+      # # Step 8: End SonarQube Analysis
+      # - name: End SonarQube Analysis
+      #   run: |
+      #     dotnet sonarscanner end `
+      #       /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
